@@ -10,7 +10,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Packege
+    - name: Package
       run: mvn package
 
   publish:
