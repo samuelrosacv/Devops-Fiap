@@ -57,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy-dev:
+  deploy-DEV:
     needs: publish
     runs-on: ubuntu-latest
     environment:
@@ -69,8 +69,8 @@ jobs:
         run:
           echo "Deploy DEV"
 
-  Smoketest:
-    needs: deploy-dev
+  Smoketest-DEV:
+    needs: deploy-DEV
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     steps:
@@ -80,7 +80,7 @@ jobs:
         run:
           sh 'src/main/scripts/smoketest.sh'
     
-  deploy-Pre:
+  deploy-PRE:
     needs: publish
     runs-on: ubuntu-latest
     environment:
@@ -91,8 +91,30 @@ jobs:
         shell: bash
         run:
           echo "Deploy PRE"
+          
+  Smoketest-PRE:
+    needs: deploy-PRE
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/release'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        shell: bash
+        run:
+          sh 'src/main/scripts/smoketest.sh'
 
-  deploy-prd:
+  TesteIntegrado-PRE:
+    needs: Smoketest-PRE
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/release'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        shell: bash
+        run:
+          sh 'src/main/scripts/testeIntegrado.sh'
+
+  deploy-PRD:
     needs: publish
     runs-on: ubuntu-latest
     environment:
@@ -103,3 +125,25 @@ jobs:
         shell: bash
         run:
           echo "Deploy PRD"
+
+  Smoketest-PRD:
+    needs: deploy-PRD
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        shell: bash
+        run:
+          sh 'src/main/scripts/smoketest.sh'
+          
+  TestesFuncionais:
+    needs: Smoketest-PRD
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/release'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        shell: bash
+        run:
+          sh 'src/main/scripts/testesIntegrados.sh'
