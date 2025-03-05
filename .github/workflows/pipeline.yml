@@ -52,7 +52,8 @@ jobs:
           package: '*jar'
       - name: Publish package
         #run: mvn --batch-mode deploy
-        run: echo "Run publish fake"
+        run: 
+          echo "Run publish fake"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -74,7 +75,7 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     steps:
       - uses: actions/checkout@v3
-        name: Deploy
+      - name: Deploy
         shell: bash
         run:
           sh 'src/main/scripts/smoketest.sh'
