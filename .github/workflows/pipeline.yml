@@ -14,8 +14,8 @@ jobs:
       run: mvn package
 
   publish:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -30,3 +30,50 @@ jobs:
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-dev:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: DEV
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: Deploy
+        shell: bash
+        run:
+          echo "Deploy DEV"
+
+  Smoketest:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v3
+        name: Deploy
+        shell: bash
+        run:
+          sh 'src/main/scripts/smoketest.sh'
+    
+  deploy-Pre:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: PRE
+    if: github.ref == 'refs/heads/release'
+    steps:
+      - name: Deploy
+        shell: bash
+        run:
+          echo "Deploy PRE"
+
+  deploy-prd:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: PRD
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy
+        shell: bash
+        run:
+          echo "Deploy PRD"
