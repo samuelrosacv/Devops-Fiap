@@ -27,6 +27,6 @@ jobs:
           distribution: 'adopt'
           package: '*jar'
       - name: Publish package
-        run: mvn --branch-mode deploy
+        run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
