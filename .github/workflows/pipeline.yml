@@ -123,7 +123,7 @@ jobs:
       - name: Deploy
         shell: bash
         run:
-          sh 'src/main/scripts/testeIntegrado.sh'
+          sh 'src/main/scripts/testesIntegrados.sh'
 
   deploy-PRD:
     needs: publish
