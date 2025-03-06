@@ -2,9 +2,9 @@ name: Deployment
 
 on:
   push:
-    branches: [ release ]
+    branches: [ invalid ]
   pull_request:
-    branches: [ release ]   
+    branches: [ invalid ]   
 
 jobs:
   build:
