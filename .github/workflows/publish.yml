@@ -1,0 +1,40 @@
+name: pipeline
+on: 
+  push:
+
+jobs:
+    deploy-PRE:
+        runs-on: ubuntu-latest
+        environment:
+        name: PRE
+        if: github.ref == 'refs/heads/release'
+        permissions:
+            contents: read
+            packages: write
+            attestations: write
+            id-token: write
+        steps:
+        -
+            name: Login to GitHub Container Registry
+            uses: docker/login-action@v3
+            with:
+                registry: ghcr.io
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+    #          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        - 
+            name: Build and push Docker image
+            id: push
+            uses: docker/build-push-action@v3
+            with:
+                context: .
+                push: true
+                tags: 123 #${{ steps.meta.outputs.tags }}
+                labels: ${{ steps.meta.outputs.labels }}
+        - 
+            name: Generate artifact attestation
+            uses: actions/attest-build-provenance@v2
+            with:
+                subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+                subject-digest: ${{ steps.push.outputs.digest }}
+                push-to-registry: true
