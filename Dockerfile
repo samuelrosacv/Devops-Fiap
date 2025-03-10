@@ -8,7 +8,7 @@ RUN mvn clean install -DskipTests
 FROM openjdk:21-slim
 
 WORKDIR /opt/app
-COPY --from=builder /app/srv-monolito/target/*.jar /srv-monolito.jar
+COPY --from=builder /target/*.jar /demo-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/srv-monolito.jar"]
+ENTRYPOINT ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
