@@ -7,7 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: run
-      run: echo $var
+
+    - name: Print secret length
+      run: echo ${#var}
+      env:
+        var: ${{ secrets.var }}
+    
+    - name: Print secret hash
+      run: echo -n "$var" | sha256sum
       env:
         var: ${{ secrets.var }}
