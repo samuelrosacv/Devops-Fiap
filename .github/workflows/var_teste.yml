@@ -1,7 +1,7 @@
 name: Teste Variavel de ambiente
 on:
   push: 
-    branches: [ invalid ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
